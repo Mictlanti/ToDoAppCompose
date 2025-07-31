@@ -3,16 +3,18 @@ package com.horizon.todoappgit.components
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.PieChart
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -20,12 +22,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.horizon.todoappgit.data.ToDoState
@@ -34,37 +32,60 @@ import com.horizon.todoappgit.viewmodel.ToDoViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopAppBarEdit(
-    text: String = "To Do App",
     navController: NavController,
-    viewModel: ToDoViewModel
+    viewModel: ToDoViewModel,
+    onFinished: Boolean,
+    onClickFinished: () -> Unit,
+    selectTheme: () -> Unit
 ) {
+
     CenterAlignedTopAppBar(
         title = {
-            HeadLineLarge(text = text, fontWeight = FontWeight.W600)
+            if (!onFinished) HeadLineLarge(text = "Edit Note") else HeadLineLarge(text = "Personalize")
         },
         navigationIcon = {
-            IconButton(onClick = { navController.popBackStack() }) {
+            IconButton(
+                onClick = { navController.popBackStack() }
+            ) {
                 Icon(
-                    Icons.AutoMirrored.Filled.ArrowBackIos,
+                    Icons.AutoMirrored.Filled.ArrowBack,
                     "Arrow Back"
                 )
             }
         },
         actions = {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = {
-                    viewModel.deleteHomework()
-                    navController.popBackStack()
-                }) {
+            if (!onFinished) {
+                IconButton(
+                    onClick = { onClickFinished() }
+                ) {
                     Icon(
-                        Icons.Default.Delete,
+                        Icons.Default.Done,
                         "Done"
                     )
                 }
-                IconButton(onClick = {
-                    viewModel.editNote()
-                    navController.popBackStack()
-                }) {
+            } else {
+                IconButton(
+                    onClick = { selectTheme() }
+                ) {
+                    Icon(
+                        Icons.Default.PieChart,
+                        "Colors"
+                    )
+                }
+                IconButton(
+                    onClick = { viewModel.deleteHomework() }
+                ) {
+                    Icon(
+                        Icons.Default.Delete,
+                        "Delete"
+                    )
+                }
+                IconButton(
+                    onClick = {
+                        viewModel.editNote()
+                        navController.popBackStack()
+                    }
+                ) {
                     Icon(
                         Icons.Default.Done,
                         "Done"
@@ -78,8 +99,8 @@ fun TopAppBarEdit(
 @Composable
 fun CardDesign(title: String, body: String, state: ToDoState) {
 
-    val lengthBody = if (body.length > 20) body.take(20) + " ..." else body
-    val animatedColor by animateColorAsState(targetValue = colorCards(state), label = "cardColor")
+    val lengthBody = if (body.length > 22) body.take(20) + " ..." else body
+    val animatedColor by animateColorAsState(targetValue = colorCards(state.colorCard), label = "cardColor")
 
     ElevatedCard(
         onClick = {  },
@@ -97,5 +118,19 @@ fun CardDesign(title: String, body: String, state: ToDoState) {
             BodyLarge(title)
             BodyMedium(lengthBody)
         }
+    }
+}
+
+@Composable
+fun ErrorViewComponent(pad: PaddingValues) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(pad)
+    ) {
+        BodyLarge("Error to load")
+        BodyMedium("Please close and try again")
     }
 }

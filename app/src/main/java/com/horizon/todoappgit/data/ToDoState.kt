@@ -1,7 +1,5 @@
 package com.horizon.todoappgit.data
 
-import androidx.compose.ui.graphics.Color
-
 data class ToDoState(
     val id: Int? = null,
     val title: String = "",

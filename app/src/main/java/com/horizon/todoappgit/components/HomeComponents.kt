@@ -1,18 +1,15 @@
 package com.horizon.todoappgit.components
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -21,11 +18,9 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
 import androidx.compose.material.icons.automirrored.filled.NoteAdd
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DarkMode
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.LightMode
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.NoteAlt
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.CardDefaults
@@ -42,15 +37,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.horizon.todoappgit.data.ToDoState
+import com.horizon.todoappgit.data.HomeworkState
 import com.horizon.todoappgit.navigation.AppScreens
 import com.horizon.todoappgit.ui.theme.onPrimaryDark
 import com.horizon.todoappgit.ui.theme.onPrimaryDarkOther1
@@ -85,7 +80,7 @@ fun TopAppBarHome(
     navController: NavController,
     viewModel: ToDoViewModel,
     navIcon: Boolean = false,
-    onClickActionBtn : () -> Unit = {}
+    onClickActionBtn: () -> Unit = {}
 ) {
 
     val state by viewModel.state.collectAsState()
@@ -202,17 +197,22 @@ fun IconFloating(
 }
 
 @Composable
-fun CardNotes(title: String, body: String, state: ToDoState, onOpenModal: () -> Unit) {
+fun CardNotes(
+    title: String,
+    body: String,
+    homeWorkState: HomeworkState,
+    onClickEdit: () -> Unit,
+    openModal: () -> Unit
+) {
 
-    val lengthBody = if (body.length > 20) body.take(20) + " ..." else body
-    val showOptions = remember { mutableStateOf(false) }
+    val lengthBody = if (body.length > 28) body.take(28) + "..." else body
 
     ElevatedCard(
-        onClick = { showOptions.value = false },
+        onClick = { openModal() },
         modifier = Modifier
             .fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.cardColors(containerColor = colorCards(state))
+        colors = CardDefaults.cardColors(containerColor = colorCards(homeWorkState.color))
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -225,61 +225,53 @@ fun CardNotes(title: String, body: String, state: ToDoState, onOpenModal: () -> 
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                BodyLarge(title, color = colorTextCards(state))
+                BodyLarge(title, color = colorTextCards(homeWorkState.color))
                 IconFloating(
                     Icons.Default.Edit,
-                    tint = colorTextCards(state)
-                ) { onOpenModal() }
+                    tint = colorTextCards(homeWorkState.color)
+                ) { onClickEdit() }
             }
-            BodyMedium(lengthBody, color = colorTextCards(state))
+            BodyMedium(lengthBody, color = colorTextCards(homeWorkState.color))
         }
     }
 }
 
-fun colorCards(state: ToDoState): Color {
-    return if (state.darkTheme) {
-        when (state.colorCard) {
-            0 -> primaryLight
-            1 -> tertiaryLight
-            2 -> primaryLightOther1
-            3 -> tertiaryLightOther1
-            4 -> primaryLightOther2
-            5 -> tertiaryLightOther2
-            else -> primaryLight
-        }
-    } else {
-        when (state.colorCard) {
-            0 -> primaryDark
-            1 -> tertiaryDark
-            2 -> primaryDarkOther1
-            3 -> tertiaryDarkOther1
-            4 -> primaryDarkOther2
-            5 -> tertiaryDarkOther2
-            else -> primaryDark
-        }
+@Composable
+fun colorCards(value: Int): Color {
+    return when (value) {
+        0 -> MaterialTheme.colorScheme.background
+        1 -> primaryLight
+        2 -> tertiaryLight
+        3 -> primaryLightOther1
+        4 -> tertiaryLightOther1
+        5 -> primaryLightOther2
+        6 -> tertiaryLightOther2
+        7 -> primaryDark
+        8 -> tertiaryDark
+        9 -> primaryDarkOther1
+        10 -> tertiaryDarkOther1
+        11 -> primaryDarkOther2
+        12 -> tertiaryDarkOther2
+        else -> primaryDark
     }
 }
 
-fun colorTextCards(state: ToDoState): Color {
-    return if (state.darkTheme) {
-        when (state.colorCard) {
-            0 -> onPrimaryLight
-            1 -> onTertiaryLight
-            2 -> onPrimaryLightOther1
-            3 -> onTertiaryLightOther1
-            4 -> onPrimaryLightOther2
-            5 -> onTertiaryLightOther2
-            else -> onPrimaryLight
-        }
-    } else {
-        when (state.colorCard) {
-            0 -> onPrimaryDark
-            1 -> onTertiaryDark
-            2 -> onPrimaryDarkOther1
-            3 -> onTertiaryDarkOther1
-            4 -> onPrimaryDarkOther2
-            5 -> onTertiaryDarkOther2
-            else -> primaryDark
-        }
+@Composable
+fun colorTextCards(value: Int): Color {
+    return when (value) {
+        0 -> MaterialTheme.colorScheme.onBackground
+        1 -> onPrimaryLight
+        2 -> onTertiaryLight
+        3 -> onPrimaryLightOther1
+        4 -> onTertiaryLightOther1
+        5 -> onPrimaryLightOther2
+        6 -> onTertiaryLightOther2
+        7 -> onPrimaryDark
+        8 -> onTertiaryDark
+        9 -> onPrimaryDarkOther1
+        10 -> onTertiaryDarkOther1
+        11 -> onPrimaryDarkOther2
+        12 -> onTertiaryDarkOther2
+        else -> onPrimaryDark
     }
 }

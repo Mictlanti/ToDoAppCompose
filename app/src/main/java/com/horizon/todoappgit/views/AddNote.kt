@@ -1,22 +1,14 @@
 package com.horizon.todoappgit.views
 
-import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -24,78 +16,71 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.horizon.todoappgit.components.BodyLarge
 import com.horizon.todoappgit.components.BodyMedium
-import com.horizon.todoappgit.components.CardDesign
+import com.horizon.todoappgit.components.DesignCardView
 import com.horizon.todoappgit.components.TopAppBarAddNote
 import com.horizon.todoappgit.data.ToDoState
 import com.horizon.todoappgit.events.ToDoEvents
-import com.horizon.todoappgit.ui.theme.primaryDarkOther1
-import com.horizon.todoappgit.ui.theme.primaryDarkOther2
-import com.horizon.todoappgit.ui.theme.primaryLightOther1
-import com.horizon.todoappgit.ui.theme.primaryLightOther2
-import com.horizon.todoappgit.ui.theme.tertiaryDarkOther1
-import com.horizon.todoappgit.ui.theme.tertiaryDarkOther2
-import com.horizon.todoappgit.ui.theme.tertiaryLightOther1
-import com.horizon.todoappgit.ui.theme.tertiaryLightOther2
 import com.horizon.todoappgit.viewmodel.ToDoViewModel
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun AddNoteRoute(viewModel: ToDoViewModel, navController: NavController) {
 
     val state by viewModel.state.collectAsState()
-    val pagerState = rememberPagerState(pageCount = { 3 })
-//    viewModel.addNote()
-//    navController.popBackStack()
+    val onFinish = rememberSaveable { mutableStateOf(false) }
+    val changeThemeCard = remember { mutableStateOf(false) }
+    val imeVisible = WindowInsets.isImeVisible
+
+    LaunchedEffect(imeVisible) {
+        if (imeVisible) onFinish.value = false
+        changeThemeCard.value = false
+    }
 
     Scaffold(
         topBar = {
-            TopAppBarAddNote(navController = navController, viewModel = viewModel, pagerState = pagerState)
+            TopAppBarAddNote(
+                navController = navController,
+                viewModel = viewModel,
+                onFinished = onFinish.value,
+                onClickFinished = { onFinish.value = true }
+            ) {
+                changeThemeCard.value = !changeThemeCard.value
+            }
         },
         modifier = Modifier.fillMaxSize()
     ) { pad ->
-        HorizontalAddNote(pad, pagerState, state, viewModel)
+        AddNoteView(pad, state, viewModel, changeThemeCard.value)
     }
-}
-
-@Composable
-fun HorizontalAddNote(
-    pad: PaddingValues,
-    pagerState: PagerState,
-    state: ToDoState,
-    viewModel: ToDoViewModel
-) {
-
-    HorizontalPager(
-        state = pagerState,
-        userScrollEnabled = false,
-        modifier = Modifier.padding(pad)
-    ) { page ->
-        when (page) {
-            0 -> AddNoteView(state, viewModel)
-            1 -> DesignCardView(state, viewModel)
-        }
-    }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddNoteView(state: ToDoState, viewModel: ToDoViewModel) {
+fun AddNoteView(
+    pad: PaddingValues,
+    state: ToDoState,
+    viewModel: ToDoViewModel,
+    selectTheme: Boolean
+) {
     Column(
         modifier = Modifier
+            .padding(pad)
             .padding(horizontal = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
+        if (selectTheme) DesignCardView(state, viewModel)
         TextField(
             value = state.title,
             onValueChange = { viewModel.onEvent(ToDoEvents.TitleTextField(it)) },
@@ -104,12 +89,20 @@ fun AddNoteView(state: ToDoState, viewModel: ToDoViewModel) {
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = MaterialTheme.colorScheme.background,
                 cursorColor = MaterialTheme.colorScheme.tertiary,
+                focusedLabelColor = MaterialTheme.colorScheme.tertiary,
+                unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
+                focusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
+                unfocusedIndicatorColor = MaterialTheme.colorScheme.secondary
             ),
             modifier = Modifier
                 .fillMaxWidth()
 
         )
-        BodyMedium("Characters: ${state.body.length}", fontSize = 15.sp)
+        BodyMedium(
+            "Characters: ${state.body.length}",
+            fontSize = 15.sp,
+            color = MaterialTheme.colorScheme.onBackground
+        )
         TextField(
             value = state.body,
             onValueChange = { viewModel.onEvent(ToDoEvents.BodyTextField(it)) },
@@ -117,56 +110,13 @@ fun AddNoteView(state: ToDoState, viewModel: ToDoViewModel) {
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = MaterialTheme.colorScheme.background,
                 cursorColor = MaterialTheme.colorScheme.tertiary,
+                focusedLabelColor = MaterialTheme.colorScheme.tertiary,
+                unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
+                focusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
+                unfocusedIndicatorColor = MaterialTheme.colorScheme.secondary
             ),
             modifier = Modifier
                 .fillMaxSize()
         )
-    }
-}
-
-@Composable
-fun DesignCardView(state: ToDoState, viewModel: ToDoViewModel) {
-
-    val listColors = listOf(
-        MaterialTheme.colorScheme.primary,
-        MaterialTheme.colorScheme.tertiary,
-        if (state.darkTheme) primaryLightOther1 else primaryDarkOther1,
-        if (state.darkTheme) tertiaryLightOther1 else tertiaryDarkOther1,
-        if (state.darkTheme) primaryLightOther2 else primaryDarkOther2,
-        if (state.darkTheme) tertiaryLightOther2 else tertiaryDarkOther2
-    )
-
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(40.dp)
-    ) {
-        LazyRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            itemsIndexed(listColors) { index, color ->
-                if(state.colorCard == index) {
-                    Card(
-                        onClick = { viewModel.onEvent(ToDoEvents.SelectedColor(index)) },
-                        shape = CircleShape,
-                        colors = CardDefaults.cardColors(containerColor = color),
-                        modifier = Modifier
-                            .size(70.dp)
-                            .animateContentSize()
-                    ) {}
-                }
-                else {
-                    Card(
-                        onClick = { viewModel.onEvent(ToDoEvents.SelectedColor(index)) },
-                        shape = CircleShape,
-                        colors = CardDefaults.cardColors(containerColor = color.copy(alpha = .5f)),
-                        modifier = Modifier
-                            .size(50.dp)
-                    ) {}
-                }
-            }
-        }
-        CardDesign(state.title, state.body, state)
     }
 }

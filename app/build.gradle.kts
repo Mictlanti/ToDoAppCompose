@@ -85,4 +85,7 @@ dependencies {
 
     //Icons
     implementation(libs.material.icons.extended)
+
+    //fonts
+    implementation(libs.androidx.ui.text.google.fonts)
 }

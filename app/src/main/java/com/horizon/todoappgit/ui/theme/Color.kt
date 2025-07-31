@@ -75,21 +75,21 @@ val surfaceContainerHighDark = Color(0xFF282B24)
 val surfaceContainerHighestDark = Color(0xFF33362E)
 
 //Others
-val primaryLightOther1 = Color(0xFF7C4E7E)
+val primaryLightOther1 = Color(0xFF7C4E7E) //Ciruela oscuro
 val onPrimaryLightOther1 = Color(0xFFFFFFFF)
-val primaryDarkOther1 = Color(0xFFECB4EC)
+val primaryDarkOther1 = Color(0xFFECB4EC) // Lavanda claro
 val onPrimaryDarkOther1 = Color(0xFF49204D)
-val tertiaryLightOther1 = Color(0xFF616218)
+val tertiaryLightOther1 = Color(0xFF616218) // Oliva oscuro
 val onTertiaryLightOther1 = Color(0xFFFFFFFF)
-val tertiaryDarkOther1 = Color(0xFFCBCB76)
+val tertiaryDarkOther1 = Color(0xFFCBCB76) //Lima pálido
 val onTertiaryDarkOther1 = Color(0xFF323200)
-val primaryLightOther2 = Color(0xFF04677E)
+val primaryLightOther2 = Color(0xFF04677E) //Azul petróleo
 val onPrimaryLightOther2 = Color(0xFFFFFFFF)
-val tertiaryLightOther2 = Color(0xFF39693C)
+val tertiaryLightOther2 = Color(0xFF39693C) // Verde bosque
 val onTertiaryLightOther2 = Color(0xFFFFFFFF)
-val primaryDarkOther2 = Color(0xFF87D1EB)
+val primaryDarkOther2 = Color(0xFF87D1EB) // Celeste
 val onPrimaryDarkOther2 = Color(0xFF003543)
-val tertiaryDarkOther2 = Color(0xFF9ED49C)
+val tertiaryDarkOther2 = Color(0xFF9ED49C) //Menta suave
 val onTertiaryDarkOther2 = Color(0xFF053911)
 
 

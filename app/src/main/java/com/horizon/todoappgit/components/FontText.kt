@@ -5,9 +5,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
+import com.horizon.todoappgit.ui.theme.abelFont
+import com.horizon.todoappgit.ui.theme.robotoMono
 
 @Composable
 fun HeadLineLarge(
@@ -22,7 +25,8 @@ fun HeadLineLarge(
         modifier = modifier,
         color = color,
         fontWeight = fontWeight,
-        fontSize = fontSize
+        fontSize = fontSize,
+        fontFamily = abelFont
     )
 }
 
@@ -39,7 +43,8 @@ fun BodyLarge(
         modifier = modifier,
         color = color,
         fontWeight = fontWeight,
-        fontSize = fontSize
+        fontSize = fontSize,
+        fontFamily = robotoMono
     )
 }
 
@@ -48,14 +53,15 @@ fun BodyMedium(
     text: String,
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.onBackground,
-    fontWeight: FontWeight = FontWeight.Thin,
-    fontSize: TextUnit = 23.sp
+    fontWeight: FontWeight = FontWeight.W300,
+    fontSize: TextUnit = 15.sp
 ) {
     Text(
         text = text,
         modifier = modifier,
         color = color,
         fontWeight = fontWeight,
-        fontSize = fontSize
+        fontSize = fontSize,
+        fontFamily = robotoMono
     )
 }

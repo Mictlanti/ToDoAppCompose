@@ -129,7 +129,6 @@ fun ToDoAppGitTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
         content = content
     )
 }

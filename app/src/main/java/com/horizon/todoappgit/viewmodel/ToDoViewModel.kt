@@ -1,9 +1,6 @@
 package com.horizon.todoappgit.viewmodel
 
-import android.annotation.SuppressLint
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.horizon.todoappgit.data.HomeworkState
@@ -12,18 +9,11 @@ import com.horizon.todoappgit.data.datastore.DataAppStore
 import com.horizon.todoappgit.entitys.HomeworkEntity
 import com.horizon.todoappgit.events.ToDoEvents
 import com.horizon.todoappgit.repository.HomeworkRepo
-import com.horizon.todoappgit.ui.theme.primaryDarkOther1
-import com.horizon.todoappgit.ui.theme.primaryDarkOther2
-import com.horizon.todoappgit.ui.theme.primaryLightOther1
-import com.horizon.todoappgit.ui.theme.primaryLightOther2
-import com.horizon.todoappgit.ui.theme.tertiaryDarkOther1
-import com.horizon.todoappgit.ui.theme.tertiaryDarkOther2
-import com.horizon.todoappgit.ui.theme.tertiaryLightOther1
-import com.horizon.todoappgit.ui.theme.tertiaryLightOther2
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -37,8 +27,6 @@ class ToDoViewModel @Inject constructor(
     private val _state = MutableStateFlow(ToDoState())
     val state: StateFlow<ToDoState> = _state.asStateFlow()
 
-    private val emptyState = ToDoState()
-
     init {
         loadThemeColor()
         viewModelScope.launch {
@@ -50,7 +38,7 @@ class ToDoViewModel @Inject constructor(
                                 hw.idDoc,
                                 hw.title,
                                 hw.body,
-                                color = hw.color
+                                hw.color
                             )
                         }
                     )
@@ -76,6 +64,7 @@ class ToDoViewModel @Inject constructor(
     }
 
     fun addNote() {
+
         val title = _state.value.title
         val body = _state.value.body
         val color = _state.value.colorCard
@@ -92,23 +81,41 @@ class ToDoViewModel @Inject constructor(
             _state.update { it.copy(id = idDoc.toInt()) }
         }
 
-        _state.value = emptyState
+        _state.value = _state.value.copy(
+            title = "", body = "", colorCard = 0
+        )
     }
 
-    fun getNoteById(idDoc: Int) {
-        viewModelScope.launch {
-            repo.getNoteById(idDoc).collect { note ->
-                if (note != null) {
-                    _state.update {
-                        it.copy(
-                            id = idDoc,
-                            title = note.title,
-                            body = note.body
-                        )
-                    }
-                }
+    suspend fun getNoteById(idDoc: Int) : Boolean {
+        val note = repo.getNoteById(idDoc).firstOrNull()
+
+        return if(note != null) {
+            _state.update {
+                it.copy(
+                    id= idDoc,
+                    title = note.title,
+                    body = note.body,
+                    colorCard = note.color
+                )
             }
+            true
+        } else {
+            false
         }
+//        viewModelScope.launch {
+//            repo.getNoteById(idDoc).collect { note ->
+//                if (note != null) {
+//                    _state.update {
+//                        it.copy(
+//                            id = idDoc,
+//                            title = note.title,
+//                            body = note.body,
+//                            colorCard = note.color
+//                        )
+//                    }
+//                }
+//            }
+//        }
     }
 
     fun editNote() {
@@ -136,7 +143,9 @@ class ToDoViewModel @Inject constructor(
 
         viewModelScope.launch {
             repo.deleteNote(id)
-            _state.value = emptyState
+            _state.value = _state.value.copy(
+                title = "", body = "", colorCard = 0
+            )
         }
     }
 
