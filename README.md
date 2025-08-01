@@ -67,7 +67,7 @@ Sigue estos pasos para correr la app localmente:
 ## 🧑‍💻 Autor
 
 **Daniel Rosas**  
-[GitHub](https://github.com/tu-usuario)  
+[GitHub](https://github.com/Mictlanti)  
 *Gracias por probar mi app. ¡Cualquier sugerencia es bienvenida!*
 
 ---
