@@ -57,5 +57,22 @@ Sigue estos pasos para correr la app localmente:
 
 ---
 
-## 📁 Estructura básica del proyecto
+## 📌 Notas adicionales
+
+- El orden por "fecha de creación" se basa en el `id` autogenerado por Room.
+- La búsqueda es insensible a mayúsculas/minúsculas y se aplica tanto al título como al cuerpo de la nota.
+
+---
+
+## 🧑‍💻 Autor
+
+**Daniel Rosas**  
+[GitHub](https://github.com/tu-usuario)  
+*Gracias por probar mi app. ¡Cualquier sugerencia es bienvenida!*
+
+---
+
+## 📄 Licencia
+
+Este proyecto está bajo la licencia MIT. Consulta el archivo [LICENSE](LICENSE) para más información.
 
