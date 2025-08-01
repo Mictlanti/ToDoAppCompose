@@ -9,7 +9,7 @@ Una aplicación de notas simple y moderna desarrollada con **Kotlin** y **Jetpac
 <p float="left">
   <img src="https://github.com/user-attachments/assets/ee0bc65a-87aa-48a7-a2e4-025dcea19d4f" width="200"/>
   <img src="https://github.com/user-attachments/assets/76edf5b9-dd8a-4777-9a56-ed7691f97e8f" width="200"/>
-  <img src="[screenshots/search.png](https://github.com/user-attachments/assets/37b8e608-d24c-4d01-98d8-f1bb7671d574)" width="200"/>
+  <img src="https://github.com/user-attachments/assets/94c01505-2fad-4b50-9c48-104a77f1b32b" width="200"/>
 </p>
 
 ---
