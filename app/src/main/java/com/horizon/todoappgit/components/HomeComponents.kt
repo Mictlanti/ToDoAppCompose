@@ -1,10 +1,9 @@
 package com.horizon.todoappgit.components
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,14 +14,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
-import androidx.compose.material.icons.automirrored.filled.NoteAdd
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.LightMode
-import androidx.compose.material.icons.filled.NoteAlt
-import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.Reorder
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ElevatedCard
@@ -31,12 +30,13 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.horizon.todoappgit.data.HomeworkState
+import com.horizon.todoappgit.data.ToDoState
 import com.horizon.todoappgit.navigation.AppScreens
 import com.horizon.todoappgit.ui.theme.onPrimaryDark
 import com.horizon.todoappgit.ui.theme.onPrimaryDarkOther1
@@ -140,41 +141,12 @@ fun TopAppBarHome(
 
 @Composable
 fun FloatingActionBtnHome(navController: NavController) {
-
-    val action = remember { mutableStateOf(false) }
-
-    AnimatedVisibility(
-        action.value,
-        enter = scaleIn(),
-        exit = scaleOut()
+    FloatingActionButton(
+        onClick = { navController.navigate(AppScreens.AddNoteView.route) },
+        containerColor = MaterialTheme.colorScheme.tertiary
     ) {
-        FloatingActionButton(
-            onClick = { },
-            containerColor = MaterialTheme.colorScheme.tertiary
-        ) {
-            Column(
-                modifier = Modifier.padding(8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(20.dp)
-            ) {
-                IconFloating(Icons.Default.Remove) { action.value = false }
-                IconFloating(Icons.AutoMirrored.Filled.NoteAdd) {
-                    navController.navigate(AppScreens.AddNoteView.route)
-                }
-                IconFloating(Icons.Default.NoteAlt) { }
-            }
-        }
-    }
-    AnimatedVisibility(
-        !action.value,
-        enter = fadeIn(),
-        exit = fadeOut()
-    ) {
-        FloatingActionButton(
-            onClick = { action.value = true },
-            containerColor = MaterialTheme.colorScheme.tertiary
-        ) {
-            IconFloating(Icons.Default.Add) { action.value = true }
+        IconFloating(Icons.Default.Add) {
+            navController.navigate(AppScreens.AddNoteView.route)
         }
     }
 }
@@ -184,9 +156,10 @@ fun IconFloating(
     imageVector: ImageVector,
     size: Dp = 30.dp,
     tint: Color = MaterialTheme.colorScheme.onTertiary,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {
-    IconButton(onClick = onClick) {
+    IconButton(onClick = onClick, modifier) {
         Icon(
             imageVector,
             "Add Note",
@@ -210,7 +183,8 @@ fun CardNotes(
     ElevatedCard(
         onClick = { openModal() },
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp),
         shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(containerColor = colorCards(homeWorkState.color))
     ) {
@@ -273,5 +247,93 @@ fun colorTextCards(value: Int): Color {
         11 -> onPrimaryDarkOther2
         12 -> onTertiaryDarkOther2
         else -> onPrimaryDark
+    }
+}
+
+@Composable
+fun ReorderOrSearch(
+    onSearch: Boolean,
+    searchQuery: String,
+    onValueChange: (String) -> Unit,
+    orderByClick: () -> Unit,
+    onClickSearch: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        if (!onSearch) {
+            IconFloating(
+                Icons.Default.Reorder,
+                tint = MaterialTheme.colorScheme.onBackground
+            ) { orderByClick() }
+        } else {
+            TextField(
+                searchQuery,
+                onValueChange = { onValueChange(it) },
+                modifier = Modifier.weight(3f),
+                leadingIcon = { Icon(Icons.Default.Search, "Search") },
+                trailingIcon = {
+                    IconButton(
+                        onClick = { onDismiss() }
+                    ) {
+                        Icon(Icons.Default.Close, "Close")
+                    }
+                },
+                label = { Text("Search Note") }
+            )
+        }
+        if(!onSearch){
+            IconFloating(
+                Icons.Default.Search,
+                tint = MaterialTheme.colorScheme.onBackground
+            ) { onClickSearch() }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ModalBtnOrderBy(
+    orderBy: Boolean,
+    state: ToDoState,
+    viewModel: ToDoViewModel,
+    onDismiss: () -> Unit
+) {
+
+    val optionsToOrder = listOf(
+        "Default",
+        //"created date",
+        "Colors",
+        "A - Z",
+        "Recently"
+    )
+
+    if (orderBy) {
+        ModalBottomSheet(onDismiss) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp)
+                    .padding(top = 0.dp, bottom = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically)
+            ) {
+                HeadLineLarge(
+                    "Order by:",
+                    fontSize = 25.sp,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+                optionsToOrder.forEachIndexed { index, s ->
+                    BodyMedium(
+                        s,
+                        fontSize = 13.sp,
+                        color = if (index == state.orderBy) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.clickable { viewModel.sortedBy(index) }
+                    )
+                }
+            }
+        }
     }
 }

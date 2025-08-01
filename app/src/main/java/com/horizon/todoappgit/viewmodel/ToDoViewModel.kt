@@ -27,6 +27,15 @@ class ToDoViewModel @Inject constructor(
     private val _state = MutableStateFlow(ToDoState())
     val state: StateFlow<ToDoState> = _state.asStateFlow()
 
+    companion object {
+        const val ORDER_BY_DEFAULT = 0
+
+        //        const val ORDER_BY_DATE = 1
+        const val ORDER_BY_COLOR = 1
+        const val ORDER_BY_LETTER = 2
+        const val ORDER_BY_RECENTLY = 3
+    }
+
     init {
         loadThemeColor()
         viewModelScope.launch {
@@ -86,13 +95,13 @@ class ToDoViewModel @Inject constructor(
         )
     }
 
-    suspend fun getNoteById(idDoc: Int) : Boolean {
+    suspend fun getNoteById(idDoc: Int): Boolean {
         val note = repo.getNoteById(idDoc).firstOrNull()
 
-        return if(note != null) {
+        return if (note != null) {
             _state.update {
                 it.copy(
-                    id= idDoc,
+                    id = idDoc,
                     title = note.title,
                     body = note.body,
                     colorCard = note.color
@@ -166,6 +175,82 @@ class ToDoViewModel @Inject constructor(
         }
 
         dataPref.saveSelectedTheme(themeValue)
+
+    }
+
+    fun sortedBy(orderBy: Int) {
+        when (orderBy) {
+            ORDER_BY_DEFAULT -> {
+                orderByDefault()
+            }
+//            ORDER_BY_DATE -> { TODO() }
+            ORDER_BY_COLOR -> {
+                orderByColor()
+            }
+
+            ORDER_BY_LETTER -> {
+                orderByLetter()
+            }
+
+            ORDER_BY_RECENTLY -> {
+                orderByRecently()
+            }
+
+            else -> {
+                orderByRecently()
+            }
+        }
+    }
+
+    private fun orderByDefault() {
+        val id = _state.value.listHomeWork.sortedBy { it.id }
+        _state.value = _state.value.copy(
+            listHomeWork = id,
+            orderBy = 0
+        )
+    }
+
+//    private fun oderByDate() {
+//        val date = lisNote.sortedBy {  }
+//    }
+
+    private fun orderByColor() {
+        val color = _state.value.listHomeWork.sortedBy { it.color }
+        _state.value = _state.value.copy(
+            listHomeWork = color,
+            orderBy = 1
+        )
+    }
+
+    private fun orderByLetter() {
+        val letter = _state.value.listHomeWork.sortedBy { it.title }
+
+        _state.value = _state.value.copy(
+            listHomeWork = letter,
+            orderBy = 2
+        )
+    }
+
+    private fun orderByRecently() {
+        val id = _state.value.listHomeWork.sortedByDescending { it.id }
+        _state.value = _state.value.copy(
+            listHomeWork = id,
+            orderBy = 3
+        )
+    }
+
+    fun listSearchQuery(value: String): List<HomeworkState> {
+
+        return if(value.isNotBlank()) {
+            _state.value.listHomeWork.filter { note ->
+                note.title.contains(value, ignoreCase = true) || note.body.contains(
+                    value,
+                    ignoreCase = true
+                )
+            }
+        } else {
+            _state.value.listHomeWork
+        }
 
     }
 

@@ -3,11 +3,14 @@ package com.horizon.todoappgit.views
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -28,15 +31,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.horizon.todoappgit.components.BodyLarge
 import com.horizon.todoappgit.components.BodyMedium
 import com.horizon.todoappgit.components.CardNotes
 import com.horizon.todoappgit.components.FloatingActionBtnHome
+import com.horizon.todoappgit.components.ModalBtnOrderBy
+import com.horizon.todoappgit.components.ReorderOrSearch
 import com.horizon.todoappgit.components.TopAppBarHome
 import com.horizon.todoappgit.components.colorCards
-import com.horizon.todoappgit.components.colorTextCards
 import com.horizon.todoappgit.data.ToDoState
 import com.horizon.todoappgit.navigation.AppScreens
 import com.horizon.todoappgit.viewmodel.ToDoViewModel
@@ -47,9 +50,14 @@ fun HomeViewRoute(viewModel: ToDoViewModel, navController: NavController) {
     val state by viewModel.state.collectAsState()
     val showData = remember { mutableStateOf(false) }
     val idDoc = remember { mutableIntStateOf(0) }
+    val orderBy = remember { mutableStateOf(false) }
 
     ModalBtnData(showData.value, viewModel, state, idDoc.intValue, navController) {
         showData.value = false
+    }
+
+    ModalBtnOrderBy(orderBy.value, state, viewModel) {
+        orderBy.value = false
     }
 
     Scaffold(
@@ -61,33 +69,57 @@ fun HomeViewRoute(viewModel: ToDoViewModel, navController: NavController) {
         LazyHomeView(
             pad,
             state,
-            onClickCad = { index -> navController.navigate(AppScreens.EditNote.widthId(index)) }
-        ) {
-            idDoc.intValue = it
-            showData.value = true
-        }
+            viewModel,
+            onClickCad = { index -> navController.navigate(AppScreens.EditNote.widthId(index)) },
+            openModal = {
+                idDoc.intValue = it
+                showData.value = true
+            },
+            orderByClick = { orderBy.value = true }
+        )
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun LazyHomeView(
     pad: PaddingValues,
     state: ToDoState,
+    viewmodel: ToDoViewModel,
     onClickCad: (Int) -> Unit,
-    openModal: (Int) -> Unit
+    openModal: (Int) -> Unit,
+    orderByClick: () -> Unit
 ) {
+
+    val searchQuery = remember { mutableStateOf("") }
+    val onSearch = remember { mutableStateOf(false) }
+    val filteredNote = viewmodel.listSearchQuery(searchQuery.value)
+    val imeVisible = WindowInsets.isImeVisible
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(pad)
-            .padding(12.dp),
+            .padding(pad),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        itemsIndexed(state.listHomeWork) { _, s ->
+        item {
+            ReorderOrSearch(
+                onSearch.value,
+                searchQuery.value,
+                onValueChange = { searchQuery.value = it },
+                orderByClick = orderByClick,
+                onClickSearch = { onSearch.value = true },
+                onDismiss = { onSearch.value = false }
+            )
+        }
+        item {
             if (state.listHomeWork.isEmpty()) {
                 BodyLarge("Insert ur homework")
-            } else {
+            }
+        }
+        if (!onSearch.value) {
+            itemsIndexed(state.listHomeWork) { _, s ->
                 CardNotes(
                     s.title,
                     s.body,
@@ -98,6 +130,23 @@ private fun LazyHomeView(
                     modifier = Modifier
                         .height(2.dp)
                         .background(Color.Gray.copy(alpha = .2f))
+                        .padding(horizontal = 12.dp)
+                )
+            }
+        }
+        if (onSearch.value) {
+            itemsIndexed(filteredNote) { _, s ->
+                CardNotes(
+                    s.title,
+                    s.body,
+                    s,
+                    onClickEdit = { onClickCad(s.id) }) { openModal(s.id) }
+                Spacer(Modifier.height(20.dp))
+                HorizontalDivider(
+                    modifier = Modifier
+                        .height(2.dp)
+                        .background(Color.Gray.copy(alpha = .2f))
+                        .padding(horizontal = 12.dp)
                 )
             }
         }
@@ -140,7 +189,7 @@ private fun ModalBtnData(
             },
             containerColor = colorCards(state.colorCard)
         ) {
-            when(showView.value) {
+            when (showView.value) {
                 true -> {
                     Column(
                         modifier = Modifier
@@ -151,6 +200,7 @@ private fun ModalBtnData(
                         BodyMedium(state.body)
                     }
                 }
+
                 false -> ErrorView(navController)
             }
         }
