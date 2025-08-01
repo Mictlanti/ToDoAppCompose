@@ -15,6 +15,7 @@ class DataAppStore @Inject constructor(
     companion object {
         private val PREFS_NAME = "user_prefs"
         private val KEY_THEME = "dark_theme"
+        private val KEY_VIEW_CARDS = "cards_view"
     }
 
     private val sharedPreferences : SharedPreferences =
@@ -28,4 +29,11 @@ class DataAppStore @Inject constructor(
         return sharedPreferences.getBoolean(KEY_THEME, userState.darkTheme)
     }
 
+    fun saveCardsView(view: Int) {
+        sharedPreferences.edit().putInt(KEY_VIEW_CARDS, view).apply()
+    }
+
+    fun getCardsView () : Int {
+        return sharedPreferences.getInt(KEY_VIEW_CARDS, userState.sorterView)
+    }
 }

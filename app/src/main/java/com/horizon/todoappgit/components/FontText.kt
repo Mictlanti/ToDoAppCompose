@@ -35,7 +35,7 @@ fun BodyLarge(
     text: String,
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.onBackground,
-    fontWeight: FontWeight = FontWeight.Normal,
+    fontWeight: FontWeight = FontWeight.W800,
     fontSize: TextUnit = 25.sp
 ) {
     Text(
@@ -53,7 +53,7 @@ fun BodyMedium(
     text: String,
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.onBackground,
-    fontWeight: FontWeight = FontWeight.W300,
+    fontWeight: FontWeight = FontWeight.W400,
     fontSize: TextUnit = 15.sp
 ) {
     Text(

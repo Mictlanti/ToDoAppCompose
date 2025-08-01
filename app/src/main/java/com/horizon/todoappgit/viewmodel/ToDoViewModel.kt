@@ -1,6 +1,5 @@
 package com.horizon.todoappgit.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.horizon.todoappgit.data.HomeworkState
@@ -27,8 +26,18 @@ class ToDoViewModel @Inject constructor(
     private val _state = MutableStateFlow(ToDoState())
     val state: StateFlow<ToDoState> = _state.asStateFlow()
 
+    companion object {
+        const val ORDER_BY_DEFAULT = 0
+
+        //        const val ORDER_BY_DATE = 1
+        const val ORDER_BY_COLOR = 1
+        const val ORDER_BY_LETTER = 2
+        const val ORDER_BY_RECENTLY = 3
+    }
+
     init {
         loadThemeColor()
+        loadCardsView()
         viewModelScope.launch {
             repo.getAllNotes().collect { list ->
                 _state.update {
@@ -60,6 +69,11 @@ class ToDoViewModel @Inject constructor(
             is ToDoEvents.SelectedColor -> {
                 _state.value = _state.value.copy(colorCard = event.value)
             }
+
+            is ToDoEvents.SortedView ->  {
+                _state.value = _state.value.copy(sorterView = event.value)
+                dataPref.saveCardsView(event.value)
+            }
         }
     }
 
@@ -86,13 +100,13 @@ class ToDoViewModel @Inject constructor(
         )
     }
 
-    suspend fun getNoteById(idDoc: Int) : Boolean {
+    suspend fun getNoteById(idDoc: Int): Boolean {
         val note = repo.getNoteById(idDoc).firstOrNull()
 
-        return if(note != null) {
+        return if (note != null) {
             _state.update {
                 it.copy(
-                    id= idDoc,
+                    id = idDoc,
                     title = note.title,
                     body = note.body,
                     colorCard = note.color
@@ -135,6 +149,10 @@ class ToDoViewModel @Inject constructor(
             repo.insertNote(update) //This updates the latest note
         }
 
+        _state.value = _state.value.copy(
+            title = "", body = "", colorCard = 0
+        )
+
     }
 
     fun deleteHomework() {
@@ -143,10 +161,11 @@ class ToDoViewModel @Inject constructor(
 
         viewModelScope.launch {
             repo.deleteNote(id)
-            _state.value = _state.value.copy(
-                title = "", body = "", colorCard = 0
-            )
         }
+
+        _state.value = _state.value.copy(
+            title = "", body = "", colorCard = 0
+        )
     }
 
     private fun loadThemeColor() {
@@ -166,6 +185,86 @@ class ToDoViewModel @Inject constructor(
         }
 
         dataPref.saveSelectedTheme(themeValue)
+
+    }
+
+    fun sortedBy(orderBy: Int) {
+        when (orderBy) {
+            ORDER_BY_DEFAULT -> {
+                orderByDefault()
+            }
+            
+            ORDER_BY_COLOR -> {
+                orderByColor()
+            }
+
+            ORDER_BY_LETTER -> {
+                orderByLetter()
+            }
+
+            ORDER_BY_RECENTLY -> {
+                orderByRecently()
+            }
+
+            else -> {
+                orderByRecently()
+            }
+        }
+    }
+
+    private fun orderByDefault() {
+        val id = _state.value.listHomeWork.sortedBy { it.id }
+        _state.value = _state.value.copy(
+            listHomeWork = id,
+            orderBy = 0
+        )
+    }
+
+    private fun orderByColor() {
+        val color = _state.value.listHomeWork.sortedBy { it.color }
+        _state.value = _state.value.copy(
+            listHomeWork = color,
+            orderBy = 1
+        )
+    }
+
+    private fun orderByLetter() {
+        val letter = _state.value.listHomeWork.sortedBy { it.title }
+
+        _state.value = _state.value.copy(
+            listHomeWork = letter,
+            orderBy = 2
+        )
+    }
+
+    private fun orderByRecently() {
+        val id = _state.value.listHomeWork.sortedByDescending { it.id }
+        _state.value = _state.value.copy(
+            listHomeWork = id,
+            orderBy = 3
+        )
+    }
+
+    fun listSearchQuery(value: String): List<HomeworkState> {
+
+        return if(value.isNotBlank()) {
+            _state.value.listHomeWork.filter { note ->
+                note.title.contains(value, ignoreCase = true) || note.body.contains(
+                    value,
+                    ignoreCase = true
+                )
+            }
+        } else {
+            _state.value.listHomeWork
+        }
+
+    }
+
+    private fun loadCardsView() {
+
+        val value = dataPref.getCardsView()
+
+        _state.value = _state.value.copy(sorterView = value)
 
     }
 
