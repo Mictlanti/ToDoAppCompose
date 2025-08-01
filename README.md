@@ -45,7 +45,7 @@ Sigue estos pasos para correr la app localmente:
 
 1. Clona este repositorio:
     ```bash
-    git clone https://github.com/tu-usuario/ToDoApp.git
+    git clone https://github.com/Mictlanti/ToDoAppCompose.git
     cd ToDoApp
     ```
 
