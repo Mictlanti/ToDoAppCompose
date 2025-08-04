@@ -1,9 +1,9 @@
-package com.horizon.todoappgit.module
+package com.horizon.todoappgit.data.di
 
 import android.content.Context
 import androidx.room.Room
-import com.horizon.todoappgit.dao.HomeworkDao
-import com.horizon.todoappgit.db.HomeworkDb
+import com.horizon.todoappgit.data.local.dao.HomeworkDao
+import com.horizon.todoappgit.data.HomeworkDb
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

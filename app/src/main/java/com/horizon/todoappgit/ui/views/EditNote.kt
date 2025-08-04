@@ -1,4 +1,4 @@
-package com.horizon.todoappgit.views
+package com.horizon.todoappgit.ui.views
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,13 +23,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.horizon.todoappgit.components.BodyLarge
-import com.horizon.todoappgit.components.BodyTextField
-import com.horizon.todoappgit.components.DesignCardView
-import com.horizon.todoappgit.components.ErrorViewComponent
-import com.horizon.todoappgit.components.TitleTextField
-import com.horizon.todoappgit.components.TopAppBarEdit
-import com.horizon.todoappgit.viewmodel.ToDoViewModel
+import com.horizon.todoappgit.ui.components.BodyLarge
+import com.horizon.todoappgit.ui.components.BodyTextField
+import com.horizon.todoappgit.ui.components.DesignCardView
+import com.horizon.todoappgit.ui.components.ErrorViewComponent
+import com.horizon.todoappgit.ui.components.TitleTextField
+import com.horizon.todoappgit.ui.components.TopAppBarEdit
+import com.horizon.todoappgit.ui.viewmodel.ToDoViewModel
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable

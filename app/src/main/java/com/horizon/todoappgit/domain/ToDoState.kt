@@ -1,4 +1,4 @@
-package com.horizon.todoappgit.data
+package com.horizon.todoappgit.domain
 
 data class ToDoState(
     val id: Int? = null,

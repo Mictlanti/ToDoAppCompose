@@ -1,4 +1,4 @@
-package com.horizon.todoappgit.components
+package com.horizon.todoappgit.ui.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -14,7 +14,6 @@ import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.PieChart
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -26,8 +25,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.horizon.todoappgit.data.ToDoState
-import com.horizon.todoappgit.viewmodel.ToDoViewModel
+import com.horizon.todoappgit.domain.ToDoState
+import com.horizon.todoappgit.ui.viewmodel.ToDoViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

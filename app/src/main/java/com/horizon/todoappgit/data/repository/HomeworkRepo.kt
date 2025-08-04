@@ -1,7 +1,7 @@
-package com.horizon.todoappgit.repository
+package com.horizon.todoappgit.data.repository
 
-import com.horizon.todoappgit.dao.HomeworkDao
-import com.horizon.todoappgit.entitys.HomeworkEntity
+import com.horizon.todoappgit.data.local.dao.HomeworkDao
+import com.horizon.todoappgit.data.local.entitys.HomeworkEntity
 import javax.inject.Inject
 
 class HomeworkRepo @Inject constructor(

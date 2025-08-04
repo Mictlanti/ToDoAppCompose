@@ -6,10 +6,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.horizon.todoappgit.viewmodel.ToDoViewModel
-import com.horizon.todoappgit.views.AddNoteRoute
-import com.horizon.todoappgit.views.EditNoteRoute
-import com.horizon.todoappgit.views.HomeViewRoute
+import com.horizon.todoappgit.ui.viewmodel.ToDoViewModel
+import com.horizon.todoappgit.ui.views.AddNoteRoute
+import com.horizon.todoappgit.ui.views.EditNoteRoute
+import com.horizon.todoappgit.ui.views.HomeViewRoute
 
 @Composable
 fun Navigation(viewModel: ToDoViewModel) {

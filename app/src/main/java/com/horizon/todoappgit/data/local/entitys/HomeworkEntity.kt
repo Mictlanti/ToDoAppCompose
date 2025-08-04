@@ -1,4 +1,4 @@
-package com.horizon.todoappgit.entitys
+package com.horizon.todoappgit.data.local.entitys
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

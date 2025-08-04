@@ -1,4 +1,4 @@
-package com.horizon.todoappgit.views
+package com.horizon.todoappgit.ui.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -34,24 +34,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.horizon.todoappgit.components.BodyLarge
-import com.horizon.todoappgit.components.BodyMedium
-import com.horizon.todoappgit.components.BoxOptionsOrder
-import com.horizon.todoappgit.components.BoxOrderView
-import com.horizon.todoappgit.components.CardNotes
-import com.horizon.todoappgit.components.FloatingActionBtnHome
-import com.horizon.todoappgit.components.HeadLineLarge
-import com.horizon.todoappgit.components.IconFloating
-import com.horizon.todoappgit.components.ReorderOrSearch
-import com.horizon.todoappgit.components.TopAppBarHome
-import com.horizon.todoappgit.components.ViewDefaultCards
-import com.horizon.todoappgit.components.ViewSmallCards
-import com.horizon.todoappgit.components.ViewVerticalGrid
-import com.horizon.todoappgit.components.colorCards
-import com.horizon.todoappgit.components.colorTextCards
-import com.horizon.todoappgit.data.ToDoState
+import com.horizon.todoappgit.ui.components.BodyLarge
+import com.horizon.todoappgit.ui.components.BodyMedium
+import com.horizon.todoappgit.ui.components.BoxOptionsOrder
+import com.horizon.todoappgit.ui.components.BoxOrderView
+import com.horizon.todoappgit.ui.components.CardNotes
+import com.horizon.todoappgit.ui.components.FloatingActionBtnHome
+import com.horizon.todoappgit.ui.components.HeadLineLarge
+import com.horizon.todoappgit.ui.components.IconFloating
+import com.horizon.todoappgit.ui.components.ReorderOrSearch
+import com.horizon.todoappgit.ui.components.TopAppBarHome
+import com.horizon.todoappgit.ui.components.ViewDefaultCards
+import com.horizon.todoappgit.ui.components.ViewSmallCards
+import com.horizon.todoappgit.ui.components.ViewVerticalGrid
+import com.horizon.todoappgit.ui.components.colorCards
+import com.horizon.todoappgit.ui.components.colorTextCards
+import com.horizon.todoappgit.domain.ToDoState
 import com.horizon.todoappgit.navigation.AppScreens
-import com.horizon.todoappgit.viewmodel.ToDoViewModel
+import com.horizon.todoappgit.ui.viewmodel.ToDoViewModel
 
 @Composable
 fun HomeViewRoute(viewModel: ToDoViewModel, navController: NavController) {
@@ -246,7 +246,6 @@ fun ModalBtnOrderBy(
 
     val optionsToOrder = listOf(
         "Default",
-        //"created date",
         "Colors",
         "A - Z",
         "Recently"

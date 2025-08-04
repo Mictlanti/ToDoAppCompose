@@ -1,13 +1,13 @@
-package com.horizon.todoappgit.viewmodel
+package com.horizon.todoappgit.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.horizon.todoappgit.data.HomeworkState
-import com.horizon.todoappgit.data.ToDoState
-import com.horizon.todoappgit.data.datastore.DataAppStore
-import com.horizon.todoappgit.entitys.HomeworkEntity
-import com.horizon.todoappgit.events.ToDoEvents
-import com.horizon.todoappgit.repository.HomeworkRepo
+import com.horizon.todoappgit.domain.HomeworkState
+import com.horizon.todoappgit.domain.ToDoState
+import com.horizon.todoappgit.data.local.entitys.HomeworkEntity
+import com.horizon.todoappgit.ui.events.ToDoEvents
+import com.horizon.todoappgit.data.repository.HomeworkRepo
+import com.horizon.todoappgit.data.repository.PreferencesRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ToDoViewModel @Inject constructor(
     private val repo: HomeworkRepo,
-    private val dataPref: DataAppStore
+    private val dataPref: PreferencesRepo
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ToDoState())

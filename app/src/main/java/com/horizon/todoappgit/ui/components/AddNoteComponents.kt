@@ -1,4 +1,4 @@
-package com.horizon.todoappgit.components
+package com.horizon.todoappgit.ui.components
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.border
@@ -14,7 +14,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.PieChart
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -24,17 +23,15 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.horizon.todoappgit.data.ToDoState
-import com.horizon.todoappgit.events.ToDoEvents
+import com.horizon.todoappgit.domain.ToDoState
+import com.horizon.todoappgit.ui.events.ToDoEvents
 import com.horizon.todoappgit.ui.theme.primaryDark
 import com.horizon.todoappgit.ui.theme.primaryDarkOther1
 import com.horizon.todoappgit.ui.theme.primaryDarkOther2
@@ -47,7 +44,7 @@ import com.horizon.todoappgit.ui.theme.tertiaryDarkOther2
 import com.horizon.todoappgit.ui.theme.tertiaryLight
 import com.horizon.todoappgit.ui.theme.tertiaryLightOther1
 import com.horizon.todoappgit.ui.theme.tertiaryLightOther2
-import com.horizon.todoappgit.viewmodel.ToDoViewModel
+import com.horizon.todoappgit.ui.viewmodel.ToDoViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -116,24 +113,41 @@ fun TopAppBarAddNote(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TitleTextField(state: ToDoState, viewModel: ToDoViewModel) {
     TextField(
         value = state.title,
         onValueChange = { viewModel.onEvent(ToDoEvents.TitleTextField(it)) },
-        label = { Text(text = "Title") },
-        maxLines = 1,
+        label = { Text(text = "Note") },
+        colors = TextFieldDefaults.textFieldColors(
+            containerColor = MaterialTheme.colorScheme.background,
+            cursorColor = MaterialTheme.colorScheme.tertiary,
+            focusedLabelColor = MaterialTheme.colorScheme.tertiary,
+            unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
+            focusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
+            unfocusedIndicatorColor = MaterialTheme.colorScheme.secondary
+        ),
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BodyTextField(state: ToDoState, viewModel: ToDoViewModel) {
     TextField(
         value = state.body,
         onValueChange = { viewModel.onEvent(ToDoEvents.BodyTextField(it)) },
         label = { Text(text = "Note") },
+        colors = TextFieldDefaults.textFieldColors(
+            containerColor = MaterialTheme.colorScheme.background,
+            cursorColor = MaterialTheme.colorScheme.tertiary,
+            focusedLabelColor = MaterialTheme.colorScheme.tertiary,
+            unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
+            focusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
+            unfocusedIndicatorColor = MaterialTheme.colorScheme.secondary
+        ),
         modifier = Modifier
             .fillMaxSize()
     )

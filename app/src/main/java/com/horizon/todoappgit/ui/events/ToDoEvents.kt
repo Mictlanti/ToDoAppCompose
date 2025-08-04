@@ -1,4 +1,4 @@
-package com.horizon.todoappgit.events
+package com.horizon.todoappgit.ui.events
 
 sealed class ToDoEvents {
     data class TitleTextField(val value : String) : ToDoEvents()

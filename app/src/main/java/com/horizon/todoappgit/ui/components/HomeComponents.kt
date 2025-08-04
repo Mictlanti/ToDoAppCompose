@@ -1,4 +1,4 @@
-package com.horizon.todoappgit.components
+package com.horizon.todoappgit.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.scaleIn
@@ -6,9 +6,7 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,14 +19,12 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Reorder
 import androidx.compose.material.icons.filled.Search
@@ -41,7 +37,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -52,15 +47,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.horizon.todoappgit.data.HomeworkState
-import com.horizon.todoappgit.data.ToDoState
-import com.horizon.todoappgit.events.ToDoEvents
+import com.horizon.todoappgit.domain.HomeworkState
+import com.horizon.todoappgit.domain.ToDoState
+import com.horizon.todoappgit.ui.events.ToDoEvents
 import com.horizon.todoappgit.navigation.AppScreens
 import com.horizon.todoappgit.ui.theme.onPrimaryDark
 import com.horizon.todoappgit.ui.theme.onPrimaryDarkOther1
@@ -86,7 +80,7 @@ import com.horizon.todoappgit.ui.theme.tertiaryDarkOther2
 import com.horizon.todoappgit.ui.theme.tertiaryLight
 import com.horizon.todoappgit.ui.theme.tertiaryLightOther1
 import com.horizon.todoappgit.ui.theme.tertiaryLightOther2
-import com.horizon.todoappgit.viewmodel.ToDoViewModel
+import com.horizon.todoappgit.ui.viewmodel.ToDoViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -336,7 +330,7 @@ fun BoxOrderView(
             BodyMedium(
                 s,
                 fontSize = 13.sp,
-                color = if (index == state.orderBy) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onBackground,
+                color = if (index == state.sorterView) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.clickable { viewModel.onEvent(ToDoEvents.SortedView(index)) }
             )
         }

@@ -1,4 +1,4 @@
-package com.horizon.todoappgit.components
+package com.horizon.todoappgit.ui.components
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
