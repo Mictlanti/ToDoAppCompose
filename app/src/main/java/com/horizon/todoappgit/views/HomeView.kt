@@ -246,7 +246,6 @@ fun ModalBtnOrderBy(
 
     val optionsToOrder = listOf(
         "Default",
-        //"created date",
         "Colors",
         "A - Z",
         "Recently"

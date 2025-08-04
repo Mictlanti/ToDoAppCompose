@@ -28,7 +28,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.horizon.todoappgit.components.BodyMedium
+import com.horizon.todoappgit.components.BodyTextField
 import com.horizon.todoappgit.components.DesignCardView
+import com.horizon.todoappgit.components.TitleTextField
 import com.horizon.todoappgit.components.TopAppBarAddNote
 import com.horizon.todoappgit.data.ToDoState
 import com.horizon.todoappgit.events.ToDoEvents
@@ -65,7 +67,6 @@ fun AddNoteRoute(viewModel: ToDoViewModel, navController: NavController) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddNoteView(
     pad: PaddingValues,
@@ -81,42 +82,12 @@ fun AddNoteView(
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         if (selectTheme) DesignCardView(state, viewModel)
-        TextField(
-            value = state.title,
-            onValueChange = { viewModel.onEvent(ToDoEvents.TitleTextField(it)) },
-            label = { Text(text = "Title") },
-            maxLines = 1,
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = MaterialTheme.colorScheme.background,
-                cursorColor = MaterialTheme.colorScheme.tertiary,
-                focusedLabelColor = MaterialTheme.colorScheme.tertiary,
-                unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
-                focusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
-                unfocusedIndicatorColor = MaterialTheme.colorScheme.secondary
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-
-        )
+        TitleTextField(state, viewModel)
         BodyMedium(
             "Characters: ${state.body.length}",
             fontSize = 15.sp,
             color = MaterialTheme.colorScheme.onBackground
         )
-        TextField(
-            value = state.body,
-            onValueChange = { viewModel.onEvent(ToDoEvents.BodyTextField(it)) },
-            label = { Text(text = "Note") },
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = MaterialTheme.colorScheme.background,
-                cursorColor = MaterialTheme.colorScheme.tertiary,
-                focusedLabelColor = MaterialTheme.colorScheme.tertiary,
-                unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
-                focusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
-                unfocusedIndicatorColor = MaterialTheme.colorScheme.secondary
-            ),
-            modifier = Modifier
-                .fillMaxSize()
-        )
+        BodyTextField(state, viewModel)
     }
 }

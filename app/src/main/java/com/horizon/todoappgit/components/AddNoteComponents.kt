@@ -24,6 +24,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -116,24 +117,41 @@ fun TopAppBarAddNote(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TitleTextField(state: ToDoState, viewModel: ToDoViewModel) {
     TextField(
         value = state.title,
         onValueChange = { viewModel.onEvent(ToDoEvents.TitleTextField(it)) },
-        label = { Text(text = "Title") },
-        maxLines = 1,
+        label = { Text(text = "Note") },
+        colors = TextFieldDefaults.textFieldColors(
+            containerColor = MaterialTheme.colorScheme.background,
+            cursorColor = MaterialTheme.colorScheme.tertiary,
+            focusedLabelColor = MaterialTheme.colorScheme.tertiary,
+            unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
+            focusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
+            unfocusedIndicatorColor = MaterialTheme.colorScheme.secondary
+        ),
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BodyTextField(state: ToDoState, viewModel: ToDoViewModel) {
     TextField(
         value = state.body,
         onValueChange = { viewModel.onEvent(ToDoEvents.BodyTextField(it)) },
         label = { Text(text = "Note") },
+        colors = TextFieldDefaults.textFieldColors(
+            containerColor = MaterialTheme.colorScheme.background,
+            cursorColor = MaterialTheme.colorScheme.tertiary,
+            focusedLabelColor = MaterialTheme.colorScheme.tertiary,
+            unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
+            focusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
+            unfocusedIndicatorColor = MaterialTheme.colorScheme.secondary
+        ),
         modifier = Modifier
             .fillMaxSize()
     )
