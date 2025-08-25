@@ -25,6 +25,7 @@ Una aplicación de notas simple y moderna desarrollada con **Kotlin** y **Jetpac
   - Orden alfabético
 - 🌗 Soporte para tema claro y oscuro (cambio manual).
 - ⚡ Flujo de estado reactivo usando `StateFlow`.
+- Clean architecture MVVM
 
 ---
 
